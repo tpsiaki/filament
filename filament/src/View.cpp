@@ -509,7 +509,7 @@ void FView::prepare(FEngine& engine, driver::DriverApi& driver, ArenaScope& aren
      * Update driver state
      */
 
-    float fraction = (engine.getTime().count() % 1000000000) / 1000000000.0f;
+    float fraction = engine.getTime().count() / 1000000000.0f;
     getUb().setUniform(offsetof(FEngine::PerViewUib, time), fraction);
 
     // upload the renderables's dirty UBOs
