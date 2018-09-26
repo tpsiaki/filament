@@ -28,6 +28,7 @@ import com.google.android.filament.tungsten.model.createMultiplyNode
 import com.google.android.filament.tungsten.model.createShaderNode
 import com.google.android.filament.tungsten.model.createSubtractNode
 import com.google.android.filament.tungsten.model.createTextureSampleNode
+import com.google.android.filament.tungsten.model.createTimeNode
 import com.google.android.filament.tungsten.model.serialization.INodeFactory
 
 class NodeRegistry : INodeFactory {
@@ -57,6 +58,7 @@ class NodeRegistry : INodeFactory {
                 NodeEntry("Constant float3", "float3Constant", createFloat3ConstantNode),
                 NodeEntry("Float3 parameter", "float3Parameter", createFloat3ParameterNode),
                 NodeEntry("Texture sampler", "textureSample", createTextureSampleNode),
+                NodeEntry("Time", "time", createTimeNode),
                 NodeEntry("Shader", "shader", createShaderNode)
         )
         nodeLabelsForMenu = mNodes

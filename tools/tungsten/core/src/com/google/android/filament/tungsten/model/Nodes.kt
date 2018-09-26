@@ -163,6 +163,11 @@ private val textureSampleCompile = fun(node: Node, compiler: GraphCompiler): Nod
     return node
 }
 
+private val timeNodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
+    compiler.setExpressionForSlot(node.getOutputSlot("out"), Expression("getTime()", 1))
+    return node
+}
+
 val createTextureSampleNode = fun(id: NodeId) =
         Node(
             id = id,
@@ -230,6 +235,14 @@ val createFloat2ConstantNode = fun(id: NodeId): Node {
             editorFactory = ::ColorChooser))
     )
 }
+
+val createTimeNode = fun(id: NodeId): Node =
+   Node(
+       id = id,
+       type = "time",
+       compileFunction = timeNodeCompile,
+       outputSlots = listOf("out")
+   )
 
 val createShaderNode = fun(id: NodeId): Node {
     return Node(
