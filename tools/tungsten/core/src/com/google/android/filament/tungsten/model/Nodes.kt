@@ -145,13 +145,17 @@ private val constantFloat2NodeCompile = fun(node: Node, compiler: GraphCompiler)
 }
 
 private val textureSampleCompile = fun(node: Node, compiler: GraphCompiler): Node {
-    compiler.requireAttribute("uv0")
     val parameter = compiler.addParameter("sampler2d", "texture")
     compiler.associateParameterWithProperty(parameter, node.getPropertyHandle("textureSource"))
 
     // If nothing is connected to the UV input, default to getUV0()
-    val uvs = compiler.compileAndRetrieveExpression(node.getInputSlot("uv"))?.rg
-            ?: Expression("getUV0()", 2)
+    val uvInput = compiler.compileAndRetrieveExpression(node.getInputSlot("uv"))
+    val uvs = if (uvInput != null) {
+        uvInput.rg
+    } else {
+        compiler.requireAttribute("uv0")
+        Expression("getUV0()", 2)
+    }
     compiler.setExpressionForSlot(node.getInputSlot("uv"), uvs)
 
     val outputVariable = compiler.getNewTemporaryVariableName("textureSample")
@@ -165,6 +169,12 @@ private val textureSampleCompile = fun(node: Node, compiler: GraphCompiler): Nod
 
 private val timeNodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
     compiler.setExpressionForSlot(node.getOutputSlot("out"), Expression("getTime()", 1))
+    return node
+}
+
+private val texCoordNodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
+    compiler.requireAttribute("uv0")
+    compiler.setExpressionForSlot(node.getOutputSlot("out"), Expression("getUV0()", 2))
     return node
 }
 
@@ -241,6 +251,14 @@ val createTimeNode = fun(id: NodeId): Node =
        id = id,
        type = "time",
        compileFunction = timeNodeCompile,
+       outputSlots = listOf("out")
+   )
+
+val createTexCoordNode = fun(id: NodeId): Node =
+   Node(
+       id = id,
+       type = "texCoord",
+       compileFunction = texCoordNodeCompile,
        outputSlots = listOf("out")
    )
 
