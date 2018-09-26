@@ -79,6 +79,7 @@ function(add_ktxfiles SOURCE TARGET EXTRA_ARGS)
     add_custom_command(
         OUTPUT ${target_path}
         COMMAND mipgen --strip-alpha ${EXTRA_ARGS} ${source_path} ${target_path}
+        COMMAND mipgen --strip-alpha --compression=astc_fast_ldr_4.2 ${EXTRA_ARGS} ${source_path} test.ktx
         MAIN_DEPENDENCY ${source_path}
         DEPENDS mipgen)
 endfunction()
