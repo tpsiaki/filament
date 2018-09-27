@@ -25,6 +25,7 @@ import com.google.android.filament.tungsten.model.createFloat3ConstantNode
 import com.google.android.filament.tungsten.model.createFloat3ParameterNode
 import com.google.android.filament.tungsten.model.createFloatConstantNode
 import com.google.android.filament.tungsten.model.createMultiplyNode
+import com.google.android.filament.tungsten.model.createPannerNode
 import com.google.android.filament.tungsten.model.createShaderNode
 import com.google.android.filament.tungsten.model.createSubtractNode
 import com.google.android.filament.tungsten.model.createTexCoordNode
@@ -61,6 +62,7 @@ class NodeRegistry : INodeFactory {
                 NodeEntry("Texture sampler", "textureSample", createTextureSampleNode),
                 NodeEntry("Time", "time", createTimeNode),
                 NodeEntry("Texture coordinates", "texCoord", createTexCoordNode),
+                NodeEntry("Texture panner", "panner", createPannerNode),
                 NodeEntry("Shader", "shader", createShaderNode)
         )
         nodeLabelsForMenu = mNodes

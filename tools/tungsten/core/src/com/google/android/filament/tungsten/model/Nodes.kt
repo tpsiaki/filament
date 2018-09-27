@@ -178,6 +178,31 @@ private val texCoordNodeCompile = fun(node: Node, compiler: GraphCompiler): Node
     return node
 }
 
+private val pannerNodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
+    val panFunction = compiler.allocateGlobalFunction("pan", "panner")
+    compiler.provideFunctionDefinition(panFunction, """
+        vec2 $panFunction(vec2 coords, vec2 speed) {
+            vec2 invSpeed = 1.0 / speed;
+            vec2 mult = vec2(mod(getTime(), invSpeed.x) / invSpeed.x, mod(getTime(), invSpeed.y) / invSpeed.y);
+            vec2 panned = coords + mult;
+            return vec2(fract(panned.x), fract(panned.y));
+        }
+    """.trimIndent())
+
+    val uvSlot = node.getInputSlot("uv")
+    val speedSlot = node.getInputSlot("speed")
+    val uvInput = compiler.compileAndRetrieveExpression(uvSlot) ?: Literal(2)
+    val speedInput = compiler.compileAndRetrieveExpression(node.getInputSlot("speed"))
+            ?: Literal(2, 1.0f)
+    compiler.setExpressionForSlot(uvSlot, uvInput)
+    compiler.setExpressionForSlot(speedSlot, speedInput)
+
+    val outputExpression = "$panFunction(${uvInput.rg}, $speedInput)"
+    compiler.setExpressionForSlot(node.getOutputSlot("out"), Expression(outputExpression, 2))
+
+    return node
+}
+
 val createTextureSampleNode = fun(id: NodeId) =
         Node(
             id = id,
@@ -261,6 +286,15 @@ val createTexCoordNode = fun(id: NodeId): Node =
        compileFunction = texCoordNodeCompile,
        outputSlots = listOf("out")
    )
+
+val createPannerNode = fun(id: NodeId): Node =
+    Node(
+        id = id,
+        type = "panner",
+        compileFunction = pannerNodeCompile,
+        inputSlots = listOf("uv", "speed"),
+        outputSlots = listOf("out")
+    )
 
 val createShaderNode = fun(id: NodeId): Node {
     return Node(
