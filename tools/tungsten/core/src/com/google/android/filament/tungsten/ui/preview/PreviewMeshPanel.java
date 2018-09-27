@@ -84,7 +84,7 @@ public class PreviewMeshPanel extends JPanel {
 
             // Load the vertex and index buffers
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStream previewMesh = classLoader.getResourceAsStream("sphere.mesh");
+            InputStream previewMesh = classLoader.getResourceAsStream("cube.mesh");
             Filamesh mesh = FilameshLoader.load("mesh", previewMesh, engine);
             mVertexBuffer = mesh.getVertexBuffer();
             mIndexBuffer = mesh.getIndexBuffer();
