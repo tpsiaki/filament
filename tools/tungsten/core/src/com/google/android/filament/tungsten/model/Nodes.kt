@@ -98,11 +98,13 @@ private val shaderNodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
 private val constantFloat3NodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
     val outputSlot = node.getOutputSlot("result")
 
-    val color = (node.properties[0].value as Float3)
+    val x = (node.properties[0].value as FloatValue)
+    val y = (node.properties[1].value as FloatValue)
+    val z = (node.properties[2].value as FloatValue)
 
     val outputVariable = compiler.getNewTemporaryVariableName("float3Constant")
     compiler.addCodeToMaterialFunctionBody(
-            "float3 $outputVariable = float3(${color.x}, ${color.y}, ${color.z});\n")
+            "float3 $outputVariable = float3(${x.v}, ${y.v}, ${z.v});\n")
 
     compiler.setExpressionForSlot(outputSlot, Expression(outputVariable, 3))
 
@@ -133,11 +135,12 @@ private val constantFloatNodeCompile = fun(node: Node, compiler: GraphCompiler):
 private val constantFloat2NodeCompile = fun(node: Node, compiler: GraphCompiler): Node {
     val outputSlot = node.getOutputSlot("result")
 
-    val color = (node.properties[0].value as Float3)
+    val x = (node.properties[0].value as FloatValue)
+    val y = (node.properties[1].value as FloatValue)
 
     val outputVariable = compiler.getNewTemporaryVariableName("float2Constant")
     compiler.addCodeToMaterialFunctionBody(
-            "float2 $outputVariable = float2(${color.x}, ${color.y});\n")
+            "float2 $outputVariable = float2(${x.v}, ${y.v});\n")
 
     compiler.setExpressionForSlot(outputSlot, Expression(outputVariable, 2))
 
@@ -224,10 +227,23 @@ val createFloat3ConstantNode = fun(id: NodeId): Node {
         type = "float3Constant",
         compileFunction = constantFloat3NodeCompile,
         outputSlots = listOf("result"),
-        properties = listOf(Property(
-            name = "value",
-            value = Float3(),
-            editorFactory = ::ColorChooser))
+        properties = listOf(
+            Property(
+                name = "x",
+                value = FloatValue(),
+                editorFactory = ::FloatSlider
+            ),
+            Property(
+                name = "y",
+                value = FloatValue(),
+                editorFactory = ::FloatSlider
+            ),
+            Property(
+                name = "z",
+                value = FloatValue(),
+                editorFactory = ::FloatSlider
+            )
+        )
     )
 }
 
@@ -264,10 +280,18 @@ val createFloat2ConstantNode = fun(id: NodeId): Node {
         type = "float2Constant",
         compileFunction = constantFloat2NodeCompile,
         outputSlots = listOf("result"),
-        properties = listOf(Property(
-            name = "value",
-            value = Float3(),
-            editorFactory = ::ColorChooser))
+        properties = listOf(
+            Property(
+                name = "x",
+                value = FloatValue(),
+                editorFactory = ::FloatSlider
+            ),
+            Property(
+                name = "y",
+                value = FloatValue(),
+                editorFactory = ::FloatSlider
+            )
+        )
     )
 }
 
